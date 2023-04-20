@@ -29,7 +29,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>src.Main</mainClass>
+                                    <mainClass>org.hua.dit.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -46,9 +46,9 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>src/</outputDirectory>
+                            <outputDirectory>src/main/java</outputDirectory>
                             <lexDefinitions>
-                                <lexDefinition>src/lexer.jflex</lexDefinition>
+                                <lexDefinition>src/main/java/org/hua/dit/lexer.jflex</lexDefinition>
                             </lexDefinitions>
                         </configuration>
                     </execution>

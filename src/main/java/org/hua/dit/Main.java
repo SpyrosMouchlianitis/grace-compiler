@@ -1,4 +1,4 @@
-package src;
+package org.hua.dit;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

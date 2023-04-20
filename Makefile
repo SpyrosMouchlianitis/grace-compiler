@@ -1,4 +1,5 @@
 build:
+	export PATH=/usr/local/apache-maven-3.9.1/bin/:$PATH
 	mvn compile
 	mvn package
 
