@@ -13,6 +13,14 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.github.vbmacher</groupId>
+            <artifactId>java-cup-runtime</artifactId>
+            <version>11b-20160615-2</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -48,11 +56,31 @@
                         <configuration>
                             <outputDirectory>src/main/java</outputDirectory>
                             <lexDefinitions>
-                                <lexDefinition>src/main/java/org/hua/dit/lexer.jflex</lexDefinition>
+                                <lexDefinition>src/main/java/org/hua/dit/lexer/lexer.jflex</lexDefinition>
                             </lexDefinitions>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.vbmacher</groupId>
+                <artifactId>cup-maven-plugin</artifactId>
+                <version>11b-20160615-2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>src/main/java/</outputDirectory>
+                    <packageName>org.hua.dit</packageName>
+                    <className>Parser</className>
+                    <symbolsName>Symbols</symbolsName>
+                    <cupDefinition>src/main/java/org/hua/dit/cup/parser.cup</cupDefinition>
+                    <expectedConflicts>1</expectedConflicts>
+                </configuration>
             </plugin>
         </plugins>
     </build>

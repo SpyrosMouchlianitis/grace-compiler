@@ -1,4 +1,5 @@
-fun hello () : nothing
+fun test() : nothing
 {
-    \$\$ hello world \$\$
+    puts();
+    \$puts(source);
 }
