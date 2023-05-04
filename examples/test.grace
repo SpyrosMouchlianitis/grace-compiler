@@ -1,5 +1,7 @@
-fun test() : nothing
+fun main () : nothing
 {
-    puts();
-    \$puts(source);
+    \$\$reverse('allo \n world');
+        alskfja
+        \$\$
+
 }

@@ -10,11 +10,8 @@ A compiler for the Grace programming language
 
 ## Usage
 - Run `make` to compile the project.
-- Run  `make run` to run the parser. (Still a work in progress not everything works correctly).
+- Run  `make run` to run the parser.
+- Run `make clean` to do a clean install.
 
 ## Known Issues 
-- Comments/Multiline comments
-- Arrays with number e.g char[15]
-- Escape characters in single quotes e.g '\0'
-- Whenever T_num is caught the parser fails. 
-- Make the block parser rule call multiple stmt rules
+- Escape characters in single quotes e.g '\0' are not recognised

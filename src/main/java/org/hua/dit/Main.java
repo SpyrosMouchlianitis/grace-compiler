@@ -22,7 +22,7 @@ public class Main {
             l = new Lexer(r);
             Parser p = new Parser(l);
 
-            Object result = p.debug_parse().value; // todo change to p.parse().value;
+            Object result = p.parse().value;
             System.out.println("Success!");
         } catch(Exception e) {
             System.err.println("Error: " + e.getMessage());
