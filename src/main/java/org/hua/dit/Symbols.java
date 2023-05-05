@@ -10,13 +10,12 @@ public interface Symbols {
   /* terminals */
   public static final int T_or = 13;
   public static final int T_string = 43;
-  public static final int comments = 51;
+  public static final int comments = 52;
   public static final int T_char = 3;
   public static final int T_larrow = 41;
   public static final int T_mod = 10;
   public static final int T_if = 8;
   public static final int T_id = 19;
-  public static final int delim = 52;
   public static final int T_divide = 23;
   public static final int T_less = 27;
   public static final int T_rpar = 33;
@@ -37,16 +36,17 @@ public interface Symbols {
   public static final int T_hashtag = 24;
   public static final int T_nothing = 12;
   public static final int T_escapedchar = 42;
-  public static final int int_const = 48;
-  public static final int id = 47;
+  public static final int int_const = 49;
+  public static final int id = 48;
   public static final int T_do = 5;
   public static final int T_return = 15;
   public static final int T_else = 6;
   public static final int T_int = 9;
-  public static final int char_const = 49;
+  public static final int char_const = 50;
   public static final int T_ref = 14;
+  public static final int T_charconst = 47;
   public static final int T_rcurlybracket = 37;
-  public static final int string_literal = 50;
+  public static final int string_literal = 51;
   public static final int T_then = 16;
   public static final int T_times = 22;
   public static final int T_and = 2;
@@ -109,12 +109,12 @@ public interface Symbols {
   "T_comment",
   "T_multilinecomment",
   "T_delim",
+  "T_charconst",
   "id",
   "int_const",
   "char_const",
   "string_literal",
-  "comments",
-  "delim"
+  "comments"
   };
 }
 

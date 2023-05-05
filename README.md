@@ -13,5 +13,6 @@ A compiler for the Grace programming language
 - Run  `make run` to run the parser.
 - Run `make clean` to do a clean install.
 
-## Known Issues 
-- Escape characters in single quotes e.g '\0' are not recognised
+# IMPORTANT NOTE
+In the example codes provided there is a mistake on line 30 of the bubblesort code. It's missing a semicolon.
+This will result in an error during parsing. To avoid it either comment out the line or enter the missing semicolon.

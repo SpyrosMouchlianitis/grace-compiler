@@ -91,4 +91,4 @@ d     =      [0-9]
 
 \"(\\.|[^\"])*\"        { return createSymbol(Symbols.T_string); }
 
-\'([^\'\\\\]|\\\\.)*\'  { return createSymbol(Symbols.T_string); }
+'([^'\\\n\r]|\\(.|\n|\r))*'  { return createSymbol(Symbols.T_charconst); }
