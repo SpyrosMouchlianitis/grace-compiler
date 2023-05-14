@@ -130,9 +130,9 @@ cond ::= T_lpar cond T_rpar
       | expr T_moreequal expr
       ;
 
-id ::= T_id:id                      {: RESULT = new Id(id); :};
+id ::= T_id:id  {: RESULT = new Id(id); :};
 
-int_const ::= T_num:num             {: RESULT = new NumConst(num); :};
+int_const ::= T_num:num     {: RESULT = new NumConst(num); :};
 
 string_literal ::= T_string;
 
