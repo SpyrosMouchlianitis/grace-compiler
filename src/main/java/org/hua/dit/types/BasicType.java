@@ -5,14 +5,12 @@ public class BasicType extends Type {
     private enum BasicTypeEnum {
         BOOL,
         INT,
-        CHAR,
-        STRING
+        CHAR
     };
 
     static public BasicType Int = new BasicType(BasicTypeEnum.INT);
     static public BasicType Bool = new BasicType(BasicTypeEnum.BOOL);
     static public BasicType Char = new BasicType(BasicTypeEnum.CHAR);
-    static public BasicType String = new BasicType(BasicTypeEnum.STRING);
 
     private BasicTypeEnum type;
 
