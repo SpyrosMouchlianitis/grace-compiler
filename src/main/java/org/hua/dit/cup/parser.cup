@@ -8,7 +8,9 @@ terminal T_colon, T_larrow, T_escapedchar, T_string, T_comment, T_multilinecomme
 non terminal program, func_def, header, fpar_def, data_type, type, ret_type, fpar_type, local_def, var_def, func_decl, stmt,
              block, func_call, l_value, expr, cond, func_call_expr, stmt_list, local_def_list, comma_id_list, comma_id, id_list,
              and_or, semicolon_fpar_def_list;
-terminal id, int_const, char_const, string_literal, comments;
+terminal java.lang.String id;
+terminal java.lang.Integer int_const;
+terminal char_const, string_literal, comments;
 
 precedence left T_times, T_div, T_mod;
 precedence left T_plus, T_minus;
@@ -128,9 +130,9 @@ cond ::= T_lpar cond T_rpar
       | expr T_moreequal expr
       ;
 
-id ::= T_id;
+id ::= T_id:id  {: RESULT = new Id(id); :};
 
-int_const ::= T_num;
+int_const ::= T_num:num     {: RESULT = new NumConst(num); :};
 
 string_literal ::= T_string;
 
