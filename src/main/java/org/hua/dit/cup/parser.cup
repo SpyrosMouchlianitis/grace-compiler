@@ -1,16 +1,24 @@
 import java_cup.runtime.Symbol;
 
+import org.hua.dit.ast.*;
+import org.hua.dit.types.*;
+
 terminal T_and, T_char, T_div, T_do, T_else, T_fun, T_if, T_int, T_mod, T_not, T_nothing, T_or, T_ref, T_return, T_then;
-terminal T_var, T_while, T_id , T_plus , T_minus, T_times, T_divide, T_hashtag , T_equals , T_different, T_less  , T_greater;
-terminal T_lessequal, T_moreequal, T_num, T_lpar, T_rpar, T_lbracket, T_rbracket, T_lcurlybracket, T_rcurlybracket, T_comma, T_semicolon;
-terminal T_colon, T_larrow, T_escapedchar, T_string, T_comment, T_multilinecomment, T_delim, T_charconst;
+terminal T_var, T_while, T_plus , T_minus, T_times, T_divide, T_hashtag , T_equals , T_different, T_less  , T_greater;
+terminal T_lessequal, T_moreequal, T_lpar, T_rpar, T_lbracket, T_rbracket, T_lcurlybracket, T_rcurlybracket, T_comma, T_semicolon;
+terminal T_colon, T_larrow, T_escapedchar, T_string, T_comment, T_multilinecomment, T_delim;
+
+terminal java.lang.String T_id;
+terminal java.lang.Integer T_num;
+terminal java.lang.Character T_charconst;
 
 non terminal program, func_def, header, fpar_def, data_type, type, ret_type, fpar_type, local_def, var_def, func_decl, stmt,
-             block, func_call, l_value, expr, cond, func_call_expr, stmt_list, local_def_list, comma_id_list, comma_id, id_list,
+             block, func_call, l_value, cond, func_call_expr, stmt_list, local_def_list, comma_id_list, comma_id, id_list,
              and_or, semicolon_fpar_def_list;
-terminal java.lang.String id;
-terminal java.lang.Integer int_const;
-terminal char_const, string_literal, comments;
+
+non terminal Expr expr;
+
+terminal char_const, string_literal, comments, int_const;
 
 precedence left T_times, T_div, T_mod;
 precedence left T_plus, T_minus;
@@ -35,8 +43,8 @@ fpar_def ::=
           | T_ref fpar_def
           ;
 
-data_type ::= T_int
-           | T_char
+data_type ::= T_int     {: RESULT = BasicType.Int; :}
+           | T_char     {: RESULT = BasicType.Char; :}
            ;
 
 type ::= data_type
@@ -94,27 +102,27 @@ func_call ::= T_id T_lpar T_rpar
            | T_id T_lpar func_call_expr T_rpar
            ;
 
-func_call_expr ::= expr
+func_call_expr ::= expr:e               {: RESULT = e; :}
                 | func_call_expr T_comma expr
                 ;
 
-l_value ::= T_id
+l_value ::= T_id:id                     {: RESULT = new Id(id); :}
          | T_string
          | l_value T_lbracket expr T_rbracket
          ;
 
-expr ::= T_num
-      | T_charconst
+expr ::= T_num:num                      {: RESULT = new NumConst(num); :}
+      | T_charconst:charconst           {: RESULT = new CharConst(charconst); :}
       | l_value
       | func_call
-      | T_lpar expr T_rpar
-      | T_plus expr
-      | T_minus expr
-      | expr T_plus expr
-      | expr T_minus expr
-      | expr T_times expr
-      | expr T_div expr
-      | expr T_mod expr
+      | T_lpar expr:e T_rpar            {: RESULT = e; :}
+      | T_plus expr:e                   {: RESULT = e; :}
+      | T_minus expr:e                  {: RESULT = e; :}
+      | expr:l T_plus expr:r            {: RESULT = new BinOp(BinOp.Operator.PLUS, l, r); :}
+      | expr:l T_minus expr:r           {: RESULT = new BinOp(BinOp.Operator.MINUS, l, r); :}
+      | expr:l T_times expr:r           {: RESULT = new BinOp(BinOp.Operator.TIMES, l, r); :}
+      | expr:l T_div expr:r             {: RESULT = new BinOp(BinOp.Operator.DIV, l, r); :}
+      | expr:l T_mod expr:r             {: RESULT = new BinOp(BinOp.Operator.MOD, l, r); :}
       | comments
       ;
 
@@ -130,13 +138,13 @@ cond ::= T_lpar cond T_rpar
       | expr T_moreequal expr
       ;
 
-id ::= T_id:id  {: RESULT = new Id(id); :};
+id ::= T_id:id                          {: RESULT = new Id(id); :};
 
-int_const ::= T_num:num     {: RESULT = new NumConst(num); :};
+int_const ::= T_num:num                 {: RESULT = new NumConst(num); :};
 
 string_literal ::= T_string;
 
-char_const ::= T_charconst;
+char_const ::= T_charconst:charconst    {: RESULT = new CharConst(charconst); :};
 
 comments ::= T_comment
           | T_multilinecomment

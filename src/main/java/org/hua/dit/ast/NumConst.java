@@ -11,7 +11,7 @@ public class NumConst extends Expr {
     }
 
     public String toString() {
-        return "NumConst(" + number + ")";
+        return "NumConst(" + number.toString() + ")";
     }
 
     @Override
