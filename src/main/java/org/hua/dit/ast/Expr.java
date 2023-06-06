@@ -5,7 +5,7 @@ import org.hua.dit.errors.TypeException;
 import org.hua.dit.symbol.SymbolTable;
 import org.hua.dit.types.Type;
 
-public abstract class Expr extends AST {
+public abstract class Expr extends Stmt {
 
   protected Type type;
 

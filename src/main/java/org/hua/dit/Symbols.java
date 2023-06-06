@@ -9,13 +9,13 @@ package org.hua.dit;
 public interface Symbols {
   /* terminals */
   public static final int T_or = 13;
-  public static final int T_string = 41;
+  public static final int T_string = 47;
   public static final int comments = 50;
   public static final int T_char = 3;
   public static final int T_larrow = 39;
   public static final int T_mod = 10;
   public static final int T_if = 8;
-  public static final int T_id = 45;
+  public static final int T_id = 44;
   public static final int T_divide = 22;
   public static final int T_less = 26;
   public static final int T_rpar = 31;
@@ -24,7 +24,7 @@ public interface Symbols {
   public static final int T_semicolon = 37;
   public static final int T_lessequal = 28;
   public static final int T_minus = 20;
-  public static final int T_delim = 44;
+  public static final int T_delim = 43;
   public static final int T_rbracket = 33;
   public static final int T_plus = 19;
   public static final int T_different = 25;
@@ -43,7 +43,7 @@ public interface Symbols {
   public static final int T_int = 9;
   public static final int char_const = 48;
   public static final int T_ref = 14;
-  public static final int T_charconst = 47;
+  public static final int T_charconst = 46;
   public static final int T_rcurlybracket = 35;
   public static final int string_literal = 49;
   public static final int T_then = 16;
@@ -51,15 +51,15 @@ public interface Symbols {
   public static final int T_and = 2;
   public static final int T_not = 11;
   public static final int T_colon = 38;
-  public static final int T_comment = 42;
+  public static final int T_comment = 41;
   public static final int T_fun = 7;
   public static final int T_lpar = 30;
   public static final int T_greater = 27;
   public static final int T_while = 18;
   public static final int T_div = 4;
-  public static final int T_num = 46;
+  public static final int T_num = 45;
   public static final int T_lbracket = 32;
-  public static final int T_multilinecomment = 43;
+  public static final int T_multilinecomment = 42;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -102,13 +102,13 @@ public interface Symbols {
   "T_colon",
   "T_larrow",
   "T_escapedchar",
-  "T_string",
   "T_comment",
   "T_multilinecomment",
   "T_delim",
   "T_id",
   "T_num",
   "T_charconst",
+  "T_string",
   "char_const",
   "string_literal",
   "comments",

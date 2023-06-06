@@ -2,7 +2,7 @@ package org.hua.dit.types;
 
 public class BasicType extends Type {
     
-    private enum BasicTypeEnum {
+    public enum BasicTypeEnum {
         BOOL,
         INT,
         CHAR
@@ -14,7 +14,7 @@ public class BasicType extends Type {
 
     private BasicTypeEnum type;
 
-    private BasicType(BasicTypeEnum e) {
+    public BasicType(BasicTypeEnum e) {
         type = e;
     }
 

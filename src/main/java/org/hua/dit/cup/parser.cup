@@ -1,22 +1,43 @@
 import java_cup.runtime.Symbol;
-
+import java.util.List;
+import java.util.LinkedList;
 import org.hua.dit.ast.*;
 import org.hua.dit.types.*;
 
 terminal T_and, T_char, T_div, T_do, T_else, T_fun, T_if, T_int, T_mod, T_not, T_nothing, T_or, T_ref, T_return, T_then;
 terminal T_var, T_while, T_plus , T_minus, T_times, T_divide, T_hashtag , T_equals , T_different, T_less  , T_greater;
 terminal T_lessequal, T_moreequal, T_lpar, T_rpar, T_lbracket, T_rbracket, T_lcurlybracket, T_rcurlybracket, T_comma, T_semicolon;
-terminal T_colon, T_larrow, T_escapedchar, T_string, T_comment, T_multilinecomment, T_delim;
+terminal T_colon, T_larrow, T_escapedchar, T_comment, T_multilinecomment, T_delim;
 
 terminal java.lang.String T_id;
 terminal java.lang.Integer T_num;
 terminal java.lang.Character T_charconst;
+terminal java.lang.String T_string;
 
-non terminal program, func_def, header, fpar_def, data_type, type, ret_type, fpar_type, local_def, var_def, func_decl, stmt,
-             block, func_call, l_value, cond, func_call_expr, stmt_list, local_def_list, comma_id_list, comma_id, id_list,
-             and_or, semicolon_fpar_def_list;
+non terminal data_type;
 
 non terminal Expr expr;
+non terminal Cond cond;
+non terminal Stmt stmt;
+non terminal Block block;
+non terminal CommaId comma_id;
+non terminal VarDef var_def;
+non terminal Type type;
+non terminal LocalDef local_def;
+non terminal Type fpar_type;
+non terminal FparDef fpar_def;
+non terminal RetType ret_type;
+non terminal LValue l_value;
+non terminal FuncCall func_call;
+non terminal Header header;
+non terminal FuncDecl func_decl;
+non terminal FuncDef func_def;
+non terminal Program program;
+non terminal java.util.List<Stmt> stmt_list;
+non terminal java.util.List<CommaId> comma_id_list;
+non terminal java.util.List<LocalDef> local_def_list;
+non terminal java.util.List<Expr> expr_list;
+non terminal java.util.List<FparDef> semicolon_fpar_def_list;
 
 terminal char_const, string_literal, comments, int_const;
 
@@ -27,94 +48,94 @@ precedence nonassoc comments;
 
 start with program;
 
-program ::= func_def;
+program ::= func_def:fd {: RESULT = new Program(fd); :};
 
-func_def ::= header local_def_list block;
+func_def ::= header:h local_def_list:ldl block:b    {: RESULT = new FuncDef(h, ldl, b); :};
 
-header ::= T_fun T_id T_lpar fpar_def semicolon_fpar_def_list T_rpar ret_type;
+header ::= T_fun T_id:id T_lpar fpar_def:fpd semicolon_fpar_def_list:sfpdl T_rpar ret_type:rt   {: RESULT = new Header(id, fpd, sfpdl, rt); :};
 
-semicolon_fpar_def_list ::=
-                         | semicolon_fpar_def_list T_semicolon fpar_def
+semicolon_fpar_def_list ::=                                                         {: RESULT = new LinkedList<FparDef>(); :}
+                         | semicolon_fpar_def_list:sfpdl T_semicolon fpar_def:fpd   {: sfpdl.add(fpd); RESULT = sfpdl; :}
                          ;
 
 fpar_def ::=
-          | T_id T_colon fpar_type
-          | T_id T_comma fpar_def
-          | T_ref fpar_def
+          | T_id:id T_colon fpar_type:type  {: RESULT = new FparDef(id, type); :}
+          | T_id:id T_comma fpar_def:fpd    {: RESULT = new FparDef(id, fpd); :}
+          | T_ref fpar_def:fpd              {: RESULT = new FparDef(fpd); :}
           ;
 
 data_type ::= T_int     {: RESULT = BasicType.Int; :}
            | T_char     {: RESULT = BasicType.Char; :}
            ;
 
-type ::= data_type
-      | type T_lbracket T_num T_rbracket
+type ::= data_type:dt                           {: RESULT = (BasicType) dt; :}
+      | type:t T_lbracket T_num:n T_rbracket    {: RESULT = new ArrayType((BasicType) t, n); :}
       ;
 
-ret_type ::= T_colon data_type //colon should be at header but is used here to avoid conflict with data_type
-          | T_colon T_nothing
+ret_type ::= T_colon data_type:dt   {: RESULT = new RetType((BasicType) dt); :}  //colon should be at header but is used here to avoid conflict with data_type
+          | T_colon T_nothing       {: RESULT = new RetType(); :}
           ;
 
-fpar_type ::= data_type
-           | data_type T_lbracket T_rbracket
-           | data_type T_lbracket T_num T_rbracket
+fpar_type ::= data_type:dt                                  {: RESULT = (BasicType) dt; :}
+           | data_type:dt T_lbracket T_rbracket             {: RESULT = new ArrayType((BasicType) dt); :}
+           | data_type:dt T_lbracket T_num:n T_rbracket     {: RESULT = new ArrayType((BasicType) dt, n); :}
            ;
 
-local_def_list ::=
-                | local_def_list local_def
+local_def_list ::=                                  {: RESULT = new LinkedList<LocalDef>(); :}
+                | local_def_list:ldl local_def:ld   {: ldl.add(ld); RESULT = ldl; :}
                 ;
 
-local_def ::= func_def
-           | func_decl
-           | var_def
+local_def ::= func_def:fd   {: RESULT = new LocalDef(fd); :}
+           | func_decl:fd   {: RESULT = new LocalDef(fd); :}
+           | var_def:vd     {: RESULT = new LocalDef(vd); :}
            ;
 
-var_def ::= T_var T_id comma_id_list T_colon type T_semicolon
+var_def ::= T_var T_id:id comma_id_list:cidl T_colon type:t T_semicolon     {: RESULT = new VarDef(id, cidl, t); :}
          ;
 
-comma_id_list ::=
-               | comma_id_list comma_id
+comma_id_list ::=                                   {: RESULT = new LinkedList<CommaId>(); :}
+               | comma_id_list:cidl comma_id:cid    {: cidl.add(cid); RESULT = cidl; :}
                ;
 
-comma_id ::= T_comma T_id;
+comma_id ::= T_comma T_id:id                        {: RESULT = new CommaId(id); :};
 
-func_decl ::= header T_semicolon;
+func_decl ::= header:h T_semicolon                  {: RESULT = new FuncDecl(h); :};
 
-stmt ::= T_semicolon
-      | l_value T_larrow expr T_semicolon
-      | block
-      | func_call T_semicolon
-      | T_if cond T_then stmt T_else stmt
-      | T_if cond T_then stmt
-      | T_while cond T_do stmt
-      | T_return T_semicolon
-      | T_return expr T_semicolon
+stmt ::= T_semicolon:s                              //TODO
+      | l_value:lv T_larrow expr:e T_semicolon      {: RESULT = new ValueAssignment(lv, e); :}
+      | block:b                                     {: RESULT = new Block(b); :}
+      | func_call:fc T_semicolon                    {: RESULT = fc; :}
+      | T_if cond:c T_then stmt:ts T_else stmt:es   {: RESULT = new If(c, ts, es); :}
+      | T_if cond:c T_then stmt:s                   {: RESULT = new If(c, s); :}
+      | T_while cond:c T_do stmt:s                  {: RESULT = new While(c, s); :}
+      | T_return T_semicolon                        {: RESULT = new Return(); :}
+      | T_return expr:e T_semicolon                 {: RESULT = new Return(e); :}
       | var_def
       ;
 
-block ::= T_lcurlybracket stmt_list T_rcurlybracket;
+block ::= T_lcurlybracket stmt_list:sl T_rcurlybracket     {: RESULT = new Block(sl); :};
 
-stmt_list ::=
-            | stmt_list stmt
+stmt_list ::=                       {: RESULT = new LinkedList<Stmt>(); :}
+            | stmt_list:sl stmt:s   {: sl.add(s); RESULT = sl; :}
             ;
 
-func_call ::= T_id T_lpar T_rpar
-           | T_id T_lpar func_call_expr T_rpar
+func_call ::= T_id:id T_lpar T_rpar                     {: RESULT = new FuncCall(id); :}
+           | T_id:id T_lpar expr:e expr_list:el T_rpar  {: RESULT = new FuncCall(id, e, el); :}
            ;
 
-func_call_expr ::= expr:e               {: RESULT = e; :}
-                | func_call_expr T_comma expr
-                ;
+expr_list ::=                               {: RESULT = new LinkedList<Expr>(); :}
+           | expr_list:el T_comma expr:e    {: el.add(e); RESULT = el; :}
+           ;
 
-l_value ::= T_id:id                     {: RESULT = new Id(id); :}
-         | T_string
-         | l_value T_lbracket expr T_rbracket
+l_value ::= T_id:id                                 {: RESULT = new LValue(id); :}
+         | T_string:str                             {: RESULT = new LValue(str); :}
+         | l_value:lv T_lbracket expr:e T_rbracket  {: RESULT = new LValue(lv, e); :}
          ;
 
-expr ::= T_num:num                      {: RESULT = new NumConst(num); :}
+expr ::= T_num:num                      {: RESULT = new IntConst(num); :}
       | T_charconst:charconst           {: RESULT = new CharConst(charconst); :}
-      | l_value
-      | func_call
+      | l_value:lv                      {: RESULT = lv; :}
+      | func_call:fc                    {: RESULT = fc; :}
       | T_lpar expr:e T_rpar            {: RESULT = e; :}
       | T_plus expr:e                   {: RESULT = e; :}
       | T_minus expr:e                  {: RESULT = e; :}
@@ -126,23 +147,23 @@ expr ::= T_num:num                      {: RESULT = new NumConst(num); :}
       | comments
       ;
 
-cond ::= T_lpar cond T_rpar
-      | T_not cond
-      | cond T_and cond
-      | cond T_or cond
-      | expr T_equals expr
-      | expr T_hashtag expr
-      | expr T_less expr
-      | expr T_greater expr
-      | expr T_lessequal expr
-      | expr T_moreequal expr
+cond ::= T_lpar cond:c T_rpar           {: RESULT = c; :}
+      | T_not cond:c                    {: RESULT = new CondOp(CondOp.Operator.NOT, c); :}
+      | cond:lc T_and cond:rc           {: RESULT = new CondOp(CondOp.Operator.AND, lc, rc); :}
+      | cond:lc T_or cond:rc            {: RESULT = new CondOp(CondOp.Operator.OR, lc, rc); :}
+      | expr:le T_equals expr:re        {: RESULT = new CondOp(CondOp.Operator.EQUALS, le, re); :}
+      | expr:le T_hashtag expr:re       {: RESULT = new CondOp(CondOp.Operator.HASHTAG, le, re); :}
+      | expr:le T_less expr:re          {: RESULT = new CondOp(CondOp.Operator.LESS, le, re); :}
+      | expr:le T_greater expr:re       {: RESULT = new CondOp(CondOp.Operator.GREATER, le, re); :}
+      | expr:le T_lessequal expr:re     {: RESULT = new CondOp(CondOp.Operator.LESS_EQUAL, le, re); :}
+      | expr:le T_moreequal expr:re     {: RESULT = new CondOp(CondOp.Operator.GREATER_EQUAL, le, re); :}
       ;
 
 id ::= T_id:id                          {: RESULT = new Id(id); :};
 
-int_const ::= T_num:num                 {: RESULT = new NumConst(num); :};
+int_const ::= T_num:num                 {: RESULT = new IntConst(num); :};
 
-string_literal ::= T_string;
+string_literal ::= T_string:str         {: RESULT = new StringLiteral(str); :};
 
 char_const ::= T_charconst:charconst    {: RESULT = new CharConst(charconst); :};
 
